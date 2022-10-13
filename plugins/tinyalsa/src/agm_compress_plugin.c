@@ -215,8 +215,10 @@ int agm_compress_write(struct compress_plugin *plugin, const void *buff,
         will be called before start() */
     if (!priv->prepared) {
         ret = agm_session_prepare(handle);
-        if (ret)
+        if (ret) {
+            errno = ret;
             return ret;
+        }
         priv->prepared = true;
     }
 
@@ -253,6 +255,7 @@ int agm_compress_read(struct compress_plugin *plugin, void *buff, size_t count)
     struct agm_compress_priv *priv = plugin->priv;
     uint64_t handle;
     int ret = 0, buf_cnt = 0;
+    AGM_LOGV("Enter");
 
     ret = agm_get_session_handle(priv, &handle);
     if (ret)
@@ -270,20 +273,11 @@ int agm_compress_read(struct compress_plugin *plugin, void *buff, size_t count)
     }
     pthread_mutex_lock(&priv->lock);
 
-    buf_cnt = count / priv->buffer_config.size;
-    if (count % priv->buffer_config.size != 0)
-        buf_cnt +=1;
-
-    /* Avalible buffer size is always multiple of fragment size */
-    priv->bytes_avail -= (buf_cnt * priv->buffer_config.size);
-    if (priv->bytes_avail < 0)
-        AGM_LOGE("%s: err: bytes_avail = %lld", __func__, (long long) priv->bytes_avail);
-
     priv->bytes_read += count;
 
     pthread_mutex_unlock(&priv->lock);
-
-    return 0;
+    AGM_LOGV("Exit: read bytes: %d",count);
+    return count;
 }
 
 int agm_compress_tstamp(struct compress_plugin *plugin,
@@ -373,6 +367,7 @@ int agm_session_update_codec_config(struct agm_compress_priv *priv,
     media_cfg->rate =  params->codec.sample_rate;
     media_cfg->channels = params->codec.ch_out;
 
+    if (sess_cfg->dir == RX) {
     switch (params->codec.id) {
     case SND_AUDIOCODEC_MP3:
         media_cfg->format = AGM_FORMAT_MP3;
@@ -435,8 +430,29 @@ int agm_session_update_codec_config(struct agm_compress_priv *priv,
         break;
     default:
         break;
+        }
     }
 
+    if (sess_cfg->dir == TX) {
+        switch (params->codec.id) {
+        case SND_AUDIOCODEC_AAC:
+            media_cfg->format = AGM_FORMAT_AAC;
+            sess_cfg->codec.aac_enc.aac_bit_rate = params->codec.bit_rate;
+            sess_cfg->codec.aac_enc.enc_cfg.aac_enc_mode =
+                params->codec.profile;
+            sess_cfg->codec.aac_enc.enc_cfg.aac_fmt_flag = params->codec.format;
+
+            AGM_LOGD(
+                "%s: requested configuration, AAC encode mode: %x, AAC format "
+                "flag: %x, AAC bit rate: %d",
+                __func__, sess_cfg->codec.aac_enc.enc_cfg.aac_enc_mode,
+                sess_cfg->codec.aac_enc.enc_cfg.aac_fmt_flag,
+                sess_cfg->codec.aac_enc.aac_bit_rate);
+            break;
+        default:
+            break;
+        }
+    }
     agm_session_update_codec_options(sess_cfg, params);
 
     AGM_LOGD("%s: format = %d rate = %d, channels = %d\n", __func__,
@@ -468,11 +484,14 @@ int agm_compress_set_params(struct compress_plugin *plugin,
     if (sess_cfg->dir == RX)
         priv->bytes_avail = priv->total_buf_size;
     else
-        priv->bytes_avail = 0;
+        priv->bytes_avail = priv->total_buf_size;
 
     sess_cfg->start_threshold = 0;
     sess_cfg->stop_threshold = 0;
+    if (sess_cfg->dir == RX)
     sess_cfg->data_mode = AGM_DATA_NON_BLOCKING;
+    else
+        sess_cfg->data_mode = AGM_DATA_BLOCKING;
     /* Populate each codec format specific params */
     ret = agm_session_update_codec_config(priv, params);
     if (ret)
@@ -525,6 +544,19 @@ static int agm_compress_start(struct compress_plugin *plugin)
     ret = agm_get_session_handle(priv, &handle);
     if (ret)
         return ret;
+    /**
+     * Unlike playback, for capture case, call
+     * agm_session_prepare it in start.
+     * For playback it is called in write.
+     * */
+    if (!priv->prepared) {
+        ret = agm_session_prepare(handle);
+        if (ret) {
+            errno = ret;
+            return ret;
+        }
+        priv->prepared = true;
+    }
 
     ret = agm_session_start(handle);
     if (ret)
@@ -746,10 +778,12 @@ void agm_compress_close(struct compress_plugin *plugin)
     if (ret)
         return;
 
+    if (priv->session_config.dir == RX) {
     ret = agm_session_register_cb(priv->session_id, NULL,
                                   AGM_EVENT_DATA_PATH, plugin);
     ret = agm_session_register_cb(priv->session_id, NULL,
                                   AGM_EVENT_MODULE, plugin);
+    }
     ret = agm_session_close(handle);
     if (ret)
         AGM_LOGE("%s: agm_session_close failed \n", __func__);
@@ -805,7 +839,10 @@ struct compress_plugin_ops agm_compress_ops = {
 static int agm_populate_codec_caps(struct agm_compress_priv *priv)
 {
     int codec_count = 0;
+    if (priv->session_config.dir == RX)
     priv->compr_cap.direction = SND_COMPRESS_PLAYBACK;
+    else
+        priv->compr_cap.direction = SND_COMPRESS_CAPTURE;
     priv->compr_cap.min_fragment_size =
                     COMPR_PLAYBACK_MIN_FRAGMENT_SIZE;
     priv->compr_cap.max_fragment_size =
@@ -887,6 +924,8 @@ COMPRESS_PLUGIN_OPEN_FN(agm_compress_plugin)
     priv->session_config.sess_mode = sess_mode;
     priv->session_config.dir = (flags & COMPRESS_IN) ? RX : TX;
     priv->session_id = session_id;
+    AGM_LOGD("%s: requested agm session mode: %zu", __func__,
+             priv->session_config.sess_mode);
 
     if ((priv->session_config.dir == RX) && !is_playback) {
         AGM_LOGE("%s: Playback is supported for device %d \n",
@@ -904,6 +943,14 @@ COMPRESS_PLUGIN_OPEN_FN(agm_compress_plugin)
         errno = ret;
         goto err_card_put;
     }
+    // TODO introduce nonblock flag here
+    // instead of checking with direction and then registering callback
+    // use nonblock flag and then register call back
+    /**
+     * the agm call back aren't required for capture usecase. since
+     * the read calls to agm are data blocking.
+     * */
+    if (priv->session_config.dir == RX) {
     ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
                                   AGM_EVENT_DATA_PATH, agm_compress_plugin);
     if (ret)
@@ -911,6 +958,9 @@ COMPRESS_PLUGIN_OPEN_FN(agm_compress_plugin)
 
     ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
                                   AGM_EVENT_MODULE, agm_compress_plugin);
+        if (ret)
+            goto err_sess_cls;
+    }
     agm_populate_codec_caps(priv);
     priv->handle = handle;
     *plugin = agm_compress_plugin;
@@ -942,6 +992,7 @@ void agm_session_update_codec_options(struct agm_session_config *sess_cfg,
 
     union snd_codec_options *copt = &params->codec.options;
 
+    if (sess_cfg->dir == RX) {
     switch (params->codec.id) {
     case SND_AUDIOCODEC_AAC:
         sess_cfg->codec.aac_dec.audio_obj_type = copt->generic.reserved[0];
@@ -1007,5 +1058,14 @@ void agm_session_update_codec_options(struct agm_session_config *sess_cfg,
         break;
     default:
         break;
+    }
+}
+    if (sess_cfg->dir == TX) {
+        switch (params->codec.id) {
+        case SND_AUDIOCODEC_AAC:
+            break;
+        default:
+            break;
+        }
     }
 }
