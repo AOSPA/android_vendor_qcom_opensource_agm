@@ -1,4 +1,6 @@
 LOCAL_PATH := $(call my-dir)
+
+ifneq ($(QCPATH),)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE        := libagmmixer
@@ -27,7 +29,9 @@ LOCAL_SHARED_LIBRARIES += \
      libexpat
 
 include $(BUILD_SHARED_LIBRARY)
+endif
 
+ifneq ($(QCPATH),)
 # Build agmplay
 include $(CLEAR_VARS)
 
@@ -57,6 +61,9 @@ LOCAL_SHARED_LIBRARIES += \
     libagmmixer
 
 include $(BUILD_EXECUTABLE)
+endif
+
+ifneq ($(QCPATH),)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE        := agmcap
@@ -85,7 +92,9 @@ LOCAL_SHARED_LIBRARIES += \
     libagmmixer
 
 include $(BUILD_EXECUTABLE)
+endif
 
+ifneq ($(QCPATH),)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE        := agmcompressplay
@@ -122,7 +131,9 @@ LOCAL_SHARED_LIBRARIES += \
     libagmmixer
 
 include $(BUILD_EXECUTABLE)
+endif
 
+ifneq ($(QCPATH),)
 include $(CLEAR_VARS)
 
 LOCAL_MODULE        := agmvoiceui
@@ -151,3 +162,4 @@ LOCAL_SHARED_LIBRARIES += \
     libagmmixer
 
 include $(BUILD_EXECUTABLE)
+endif
