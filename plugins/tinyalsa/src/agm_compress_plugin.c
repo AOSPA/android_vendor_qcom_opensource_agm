@@ -378,69 +378,69 @@ int agm_session_update_codec_config(struct agm_compress_priv *priv,
     media_cfg->channels = params->codec.ch_out;
 
     if (sess_cfg->dir == RX) {
-    switch (params->codec.id) {
-    case SND_AUDIOCODEC_MP3:
-        media_cfg->format = AGM_FORMAT_MP3;
-        break;
-    case SND_AUDIOCODEC_AAC:
-        media_cfg->format = AGM_FORMAT_AAC;
-        if (params->codec.format == SND_AUDIOSTREAMFORMAT_MP4LATM)
-            sess_cfg->codec.aac_dec.aac_fmt_flag = 0x04;
-        else if (params->codec.format == SND_AUDIOSTREAMFORMAT_ADIF)
-            sess_cfg->codec.aac_dec.aac_fmt_flag = 0x02;
-        else if (params->codec.format == SND_AUDIOSTREAMFORMAT_MP4ADTS)
-            sess_cfg->codec.aac_dec.aac_fmt_flag = 0x00;
-        else
-            sess_cfg->codec.aac_dec.aac_fmt_flag = 0x03;
-        sess_cfg->codec.aac_dec.num_channels = params->codec.ch_in;
-        sess_cfg->codec.aac_dec.sample_rate = media_cfg->rate;
-        break;
-    case SND_AUDIOCODEC_FLAC:
-        media_cfg->format = AGM_FORMAT_FLAC;
-        sess_cfg->codec.flac_dec.num_channels = params->codec.ch_in;
-        sess_cfg->codec.flac_dec.sample_rate = media_cfg->rate;
-        break;
-#ifdef SND_AUDIOCODEC_ALAC
-    case SND_AUDIOCODEC_ALAC:
-        media_cfg->format = AGM_FORMAT_ALAC;
-        sess_cfg->codec.alac_dec.num_channels = params->codec.ch_in;
-        sess_cfg->codec.alac_dec.sample_rate = media_cfg->rate;
-        break;
-#endif
-#ifdef SND_AUDIOCODEC_APE
-    case SND_AUDIOCODEC_APE:
-        media_cfg->format = AGM_FORMAT_APE;
-        sess_cfg->codec.ape_dec.num_channels = params->codec.ch_in;
-        sess_cfg->codec.ape_dec.sample_rate = media_cfg->rate;
-        break;
-#endif
-    case SND_AUDIOCODEC_WMA:
-#ifdef SND_AUDIOPROFILE_WMA9_LOSSLESS
-        if ((params->codec.profile == SND_AUDIOPROFILE_WMA9_PRO) ||
-            (params->codec.profile == SND_AUDIOPROFILE_WMA9_LOSSLESS) ||
-            (params->codec.profile == SND_AUDIOPROFILE_WMA10_LOSSLESS)) {
-#else
-        if ((params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM0) ||
-            (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM1) ||
-            (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM2)) {
-#endif
-            media_cfg->format = AGM_FORMAT_WMAPRO;
-            sess_cfg->codec.wmapro_dec.fmt_tag = params->codec.format;
-            sess_cfg->codec.wmapro_dec.num_channels = params->codec.ch_in;
-            sess_cfg->codec.wmapro_dec.sample_rate = media_cfg->rate;
-        } else {
-            media_cfg->format = AGM_FORMAT_WMASTD;
-            sess_cfg->codec.wma_dec.fmt_tag = params->codec.format;
-            sess_cfg->codec.wma_dec.num_channels = params->codec.ch_in;
-            sess_cfg->codec.wma_dec.sample_rate = media_cfg->rate;
-        }
-        break;
-    case SND_AUDIOCODEC_VORBIS:
-        media_cfg->format = AGM_FORMAT_VORBIS;
-        break;
-    default:
-        break;
-        }
+       switch (params->codec.id) {
+       case SND_AUDIOCODEC_MP3:
+           media_cfg->format = AGM_FORMAT_MP3;
+           break;
+       case SND_AUDIOCODEC_AAC:
+           media_cfg->format = AGM_FORMAT_AAC;
+           if (params->codec.format == SND_AUDIOSTREAMFORMAT_MP4LATM)
+              sess_cfg->codec.aac_dec.aac_fmt_flag = 0x04;
+           else if (params->codec.format == SND_AUDIOSTREAMFORMAT_ADIF)
+              sess_cfg->codec.aac_dec.aac_fmt_flag = 0x02;
+           else if (params->codec.format == SND_AUDIOSTREAMFORMAT_MP4ADTS)
+              sess_cfg->codec.aac_dec.aac_fmt_flag = 0x00;
+           else
+              sess_cfg->codec.aac_dec.aac_fmt_flag = 0x03;
+           sess_cfg->codec.aac_dec.num_channels = params->codec.ch_in;
+           sess_cfg->codec.aac_dec.sample_rate = media_cfg->rate;
+           break;
+       case SND_AUDIOCODEC_FLAC:
+           media_cfg->format = AGM_FORMAT_FLAC;
+           sess_cfg->codec.flac_dec.num_channels = params->codec.ch_in;
+           sess_cfg->codec.flac_dec.sample_rate = media_cfg->rate;
+           break;
+    #ifdef SND_AUDIOCODEC_ALAC
+       case SND_AUDIOCODEC_ALAC:
+           media_cfg->format = AGM_FORMAT_ALAC;
+           sess_cfg->codec.alac_dec.num_channels = params->codec.ch_in;
+           sess_cfg->codec.alac_dec.sample_rate = media_cfg->rate;
+           break;
+    #endif
+    #ifdef SND_AUDIOCODEC_APE
+       case SND_AUDIOCODEC_APE:
+           media_cfg->format = AGM_FORMAT_APE;
+           sess_cfg->codec.ape_dec.num_channels = params->codec.ch_in;
+           sess_cfg->codec.ape_dec.sample_rate = media_cfg->rate;
+           break;
+    #endif
+       case SND_AUDIOCODEC_WMA:
+    #ifdef SND_AUDIOPROFILE_WMA9_LOSSLESS
+          if ((params->codec.profile == SND_AUDIOPROFILE_WMA9_PRO) ||
+             (params->codec.profile == SND_AUDIOPROFILE_WMA9_LOSSLESS) ||
+             (params->codec.profile == SND_AUDIOPROFILE_WMA10_LOSSLESS)) {
+    #else
+          if ((params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM0) ||
+             (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM1) ||
+             (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM2)) {
+    #endif
+             media_cfg->format = AGM_FORMAT_WMAPRO;
+             sess_cfg->codec.wmapro_dec.fmt_tag = params->codec.format;
+             sess_cfg->codec.wmapro_dec.num_channels = params->codec.ch_in;
+             sess_cfg->codec.wmapro_dec.sample_rate = media_cfg->rate;
+          } else {
+             media_cfg->format = AGM_FORMAT_WMASTD;
+             sess_cfg->codec.wma_dec.fmt_tag = params->codec.format;
+             sess_cfg->codec.wma_dec.num_channels = params->codec.ch_in;
+             sess_cfg->codec.wma_dec.sample_rate = media_cfg->rate;
+          }
+           break;
+       case SND_AUDIOCODEC_VORBIS:
+           media_cfg->format = AGM_FORMAT_VORBIS;
+           break;
+       default:
+           break;
+       }
     }
 
     if (sess_cfg->dir == TX) {
@@ -499,7 +499,7 @@ int agm_compress_set_params(struct compress_plugin *plugin,
     sess_cfg->start_threshold = 0;
     sess_cfg->stop_threshold = 0;
     if (sess_cfg->dir == RX)
-    sess_cfg->data_mode = AGM_DATA_NON_BLOCKING;
+        sess_cfg->data_mode = AGM_DATA_NON_BLOCKING;
     else
         sess_cfg->data_mode = AGM_DATA_BLOCKING;
     /* Populate each codec format specific params */
@@ -789,9 +789,9 @@ void agm_compress_close(struct compress_plugin *plugin)
         return;
 
     if (priv->session_config.dir == RX) {
-    ret = agm_session_register_cb(priv->session_id, NULL,
+        ret = agm_session_register_cb(priv->session_id, NULL,
                                   AGM_EVENT_DATA_PATH, plugin);
-    ret = agm_session_register_cb(priv->session_id, NULL,
+        ret = agm_session_register_cb(priv->session_id, NULL,
                                   AGM_EVENT_MODULE, plugin);
     }
     ret = agm_session_close(handle);
@@ -850,9 +850,10 @@ static int agm_populate_codec_caps(struct agm_compress_priv *priv)
 {
     int codec_count = 0;
     if (priv->session_config.dir == RX)
-    priv->compr_cap.direction = SND_COMPRESS_PLAYBACK;
+        priv->compr_cap.direction = SND_COMPRESS_PLAYBACK;
     else
         priv->compr_cap.direction = SND_COMPRESS_CAPTURE;
+
     priv->compr_cap.min_fragment_size =
                     COMPR_PLAYBACK_MIN_FRAGMENT_SIZE;
     priv->compr_cap.max_fragment_size =
@@ -961,12 +962,12 @@ COMPRESS_PLUGIN_OPEN_FN(agm_compress_plugin)
      * the read calls to agm are data blocking.
      * */
     if (priv->session_config.dir == RX) {
-    ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
+        ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
                                   AGM_EVENT_DATA_PATH, agm_compress_plugin);
-    if (ret)
-        goto err_sess_cls;
+        if (ret)
+            goto err_sess_cls;
 
-    ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
+        ret = agm_session_register_cb(session_id, &agm_compress_event_cb,
                                   AGM_EVENT_MODULE, agm_compress_plugin);
         if (ret)
             goto err_sess_cls;
@@ -1003,79 +1004,79 @@ void agm_session_update_codec_options(struct agm_session_config *sess_cfg,
     union snd_codec_options *copt = &params->codec.options;
 
     if (sess_cfg->dir == RX) {
-    switch (params->codec.id) {
-    case SND_AUDIOCODEC_AAC:
-        sess_cfg->codec.aac_dec.audio_obj_type = copt->generic.reserved[0];
-        sess_cfg->codec.aac_dec.total_size_of_PCE_bits = copt->generic.reserved[1];
-        break;
-    case SND_AUDIOCODEC_FLAC:
-        sess_cfg->codec.flac_dec.sample_size = copt->generic.reserved[0];
-        sess_cfg->codec.flac_dec.min_blk_size = copt->generic.reserved[1];
-        sess_cfg->codec.flac_dec.max_blk_size = copt->generic.reserved[2];
-        sess_cfg->codec.flac_dec.min_frame_size = copt->generic.reserved[3];
-        sess_cfg->codec.flac_dec.max_frame_size = copt->generic.reserved[4];
-        break;
-#ifdef SND_AUDIOCODEC_ALAC
-    case SND_AUDIOCODEC_ALAC:
-        sess_cfg->codec.alac_dec.frame_length = copt->generic.reserved[0];
-        sess_cfg->codec.alac_dec.compatible_version = copt->generic.reserved[1];
-        sess_cfg->codec.alac_dec.bit_depth = copt->generic.reserved[2];
-        sess_cfg->codec.alac_dec.pb = copt->generic.reserved[3];
-        sess_cfg->codec.alac_dec.mb = copt->generic.reserved[4];
-        sess_cfg->codec.alac_dec.kb = copt->generic.reserved[5];
-        sess_cfg->codec.alac_dec.max_run = copt->generic.reserved[6];
-        sess_cfg->codec.alac_dec.max_frame_bytes = copt->generic.reserved[7];
-        sess_cfg->codec.alac_dec.avg_bit_rate = copt->generic.reserved[8];
-        sess_cfg->codec.alac_dec.channel_layout_tag = copt->generic.reserved[9];
-        break;
-#endif
-#ifdef SND_AUDIOCODEC_APE
-    case SND_AUDIOCODEC_APE:
-        sess_cfg->codec.ape_dec.bit_width = copt->generic.reserved[0];
-        sess_cfg->codec.ape_dec.compatible_version = copt->generic.reserved[1];
-        sess_cfg->codec.ape_dec.compression_level = copt->generic.reserved[2];
-        sess_cfg->codec.ape_dec.format_flags = copt->generic.reserved[3];
-        sess_cfg->codec.ape_dec.blocks_per_frame = copt->generic.reserved[4];
-        sess_cfg->codec.ape_dec.final_frame_blocks = copt->generic.reserved[5];
-        sess_cfg->codec.ape_dec.total_frames = copt->generic.reserved[6];
-        sess_cfg->codec.ape_dec.seek_table_present = copt->generic.reserved[7];
-        break;
-#endif
-    case SND_AUDIOCODEC_WMA:
-#ifdef SND_AUDIOPROFILE_WMA9_LOSSLESS
-        if ((params->codec.profile == SND_AUDIOPROFILE_WMA9_PRO) ||
-            (params->codec.profile == SND_AUDIOPROFILE_WMA9_LOSSLESS) ||
-            (params->codec.profile == SND_AUDIOPROFILE_WMA10_LOSSLESS)) {
-#else
-        if ((params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM0) ||
-            (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM1) ||
-            (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM2)) {
-#endif
-            sess_cfg->codec.wmapro_dec.avg_bytes_per_sec = copt->generic.reserved[0];
-            sess_cfg->codec.wmapro_dec.blk_align = copt->generic.reserved[1];
-            sess_cfg->codec.wmapro_dec.bits_per_sample = copt->generic.reserved[2];
-            sess_cfg->codec.wmapro_dec.channel_mask = copt->generic.reserved[3];
-            sess_cfg->codec.wmapro_dec.enc_options = copt->generic.reserved[4];
-            sess_cfg->codec.wmapro_dec.advanced_enc_option = copt->generic.reserved[5];
-            sess_cfg->codec.wmapro_dec.advanced_enc_option2 = copt->generic.reserved[6];
-        } else {
-            sess_cfg->codec.wma_dec.avg_bytes_per_sec = copt->generic.reserved[0];
-            sess_cfg->codec.wma_dec.blk_align = copt->generic.reserved[1];
-            sess_cfg->codec.wma_dec.bits_per_sample = copt->generic.reserved[2];
-            sess_cfg->codec.wma_dec.channel_mask = copt->generic.reserved[3];
-            sess_cfg->codec.wma_dec.enc_options = copt->generic.reserved[4];
-        }
-        break;
-    default:
-        break;
-    }
-}
-    if (sess_cfg->dir == TX) {
         switch (params->codec.id) {
         case SND_AUDIOCODEC_AAC:
+            sess_cfg->codec.aac_dec.audio_obj_type = copt->generic.reserved[0];
+            sess_cfg->codec.aac_dec.total_size_of_PCE_bits = copt->generic.reserved[1];
             break;
-        default:
+        case SND_AUDIOCODEC_FLAC:
+            sess_cfg->codec.flac_dec.sample_size = copt->generic.reserved[0];
+            sess_cfg->codec.flac_dec.min_blk_size = copt->generic.reserved[1];
+            sess_cfg->codec.flac_dec.max_blk_size = copt->generic.reserved[2];
+            sess_cfg->codec.flac_dec.min_frame_size = copt->generic.reserved[3];
+            sess_cfg->codec.flac_dec.max_frame_size = copt->generic.reserved[4];
             break;
-        }
-    }
-}
+    #ifdef SND_AUDIOCODEC_ALAC
+        case SND_AUDIOCODEC_ALAC:
+            sess_cfg->codec.alac_dec.frame_length = copt->generic.reserved[0];
+            sess_cfg->codec.alac_dec.compatible_version = copt->generic.reserved[1];
+            sess_cfg->codec.alac_dec.bit_depth = copt->generic.reserved[2];
+            sess_cfg->codec.alac_dec.pb = copt->generic.reserved[3];
+            sess_cfg->codec.alac_dec.mb = copt->generic.reserved[4];
+            sess_cfg->codec.alac_dec.kb = copt->generic.reserved[5];
+            sess_cfg->codec.alac_dec.max_run = copt->generic.reserved[6];
+            sess_cfg->codec.alac_dec.max_frame_bytes = copt->generic.reserved[7];
+            sess_cfg->codec.alac_dec.avg_bit_rate = copt->generic.reserved[8];
+            sess_cfg->codec.alac_dec.channel_layout_tag = copt->generic.reserved[9];
+            break;
+    #endif
+    #ifdef SND_AUDIOCODEC_APE
+        case SND_AUDIOCODEC_APE:
+            sess_cfg->codec.ape_dec.bit_width = copt->generic.reserved[0];
+            sess_cfg->codec.ape_dec.compatible_version = copt->generic.reserved[1];
+            sess_cfg->codec.ape_dec.compression_level = copt->generic.reserved[2];
+            sess_cfg->codec.ape_dec.format_flags = copt->generic.reserved[3];
+            sess_cfg->codec.ape_dec.blocks_per_frame = copt->generic.reserved[4];
+            sess_cfg->codec.ape_dec.final_frame_blocks = copt->generic.reserved[5];
+            sess_cfg->codec.ape_dec.total_frames = copt->generic.reserved[6];
+            sess_cfg->codec.ape_dec.seek_table_present = copt->generic.reserved[7];
+            break;
+    #endif
+        case SND_AUDIOCODEC_WMA:
+    #ifdef SND_AUDIOPROFILE_WMA9_LOSSLESS
+            if ((params->codec.profile == SND_AUDIOPROFILE_WMA9_PRO) ||
+                (params->codec.profile == SND_AUDIOPROFILE_WMA9_LOSSLESS) ||
+                (params->codec.profile == SND_AUDIOPROFILE_WMA10_LOSSLESS)) {
+    #else
+             if ((params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM0) ||
+                (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM1) ||
+                (params->codec.profile == SND_AUDIOMODE_WMAPRO_LEVELM2)) {
+    #endif
+                sess_cfg->codec.wmapro_dec.avg_bytes_per_sec = copt->generic.reserved[0];
+                sess_cfg->codec.wmapro_dec.blk_align = copt->generic.reserved[1];
+                sess_cfg->codec.wmapro_dec.bits_per_sample = copt->generic.reserved[2];
+                sess_cfg->codec.wmapro_dec.channel_mask = copt->generic.reserved[3];
+                sess_cfg->codec.wmapro_dec.enc_options = copt->generic.reserved[4];
+                sess_cfg->codec.wmapro_dec.advanced_enc_option = copt->generic.reserved[5];
+                sess_cfg->codec.wmapro_dec.advanced_enc_option2 = copt->generic.reserved[6];
+            } else {
+                sess_cfg->codec.wma_dec.avg_bytes_per_sec = copt->generic.reserved[0];
+                sess_cfg->codec.wma_dec.blk_align = copt->generic.reserved[1];
+                sess_cfg->codec.wma_dec.bits_per_sample = copt->generic.reserved[2];
+                sess_cfg->codec.wma_dec.channel_mask = copt->generic.reserved[3];
+                sess_cfg->codec.wma_dec.enc_options = copt->generic.reserved[4];
+            }
+            break;
+            default:
+            break;
+          }
+       }
+       if (sess_cfg->dir == TX) {
+           switch (params->codec.id) {
+           case SND_AUDIOCODEC_AAC:
+                break;
+           default:
+                break;
+          }
+       }
+  }
