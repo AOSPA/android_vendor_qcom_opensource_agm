@@ -132,10 +132,10 @@ LOCAL_VENDOR_MODULE := true
 LOCAL_CFLAGS        += -Wno-unused-parameter -Wno-unused-result
 LOCAL_CFLAGS        += -Wno-unused-variable
 LOCAL_CFLAGS        += -DBACKEND_CONF_FILE=\"/vendor/etc/backend_conf.xml\"
-
+ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_C_INCLUDES    += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
 LOCAL_ADDITIONAL_DEPENDENCIES += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
-
+endif
 LOCAL_SRC_FILES     := agmcompressplay.c
 
 LOCAL_HEADER_LIBRARIES := \
@@ -170,10 +170,10 @@ LOCAL_VENDOR_MODULE := true
 
 LOCAL_CFLAGS        += -Wno-unused-parameter -Wno-unused-result
 LOCAL_CFLAGS        += -DBACKEND_CONF_FILE=\"/vendor/etc/backend_conf.xml\"
-
+ifeq ($(TARGET_PREBUILT_KERNEL),)
 LOCAL_C_INCLUDES    += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr/include
 LOCAL_ADDITIONAL_DEPENDENCIES += $(TARGET_OUT_INTERMEDIATES)/KERNEL_OBJ/usr
-
+endif
 LOCAL_SRC_FILES     := agmcompresscap.c
 
 LOCAL_HEADER_LIBRARIES := \
