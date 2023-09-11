@@ -22,6 +22,11 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinyalsa/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa
 else
 LOCAL_SHARED_LIBRARIES += libtinyalsa
+LOCAL_C_INCLUDES += \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 endif
 
 
@@ -55,6 +60,11 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinyalsa/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa
 else
 LOCAL_SHARED_LIBRARIES += libtinyalsa
+LOCAL_C_INCLUDES += \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 endif
 
 LOCAL_SHARED_LIBRARIES += \
@@ -85,6 +95,11 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinyalsa/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa
 else
 LOCAL_SHARED_LIBRARIES += libtinyalsa
+LOCAL_C_INCLUDES += \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 endif
 
 LOCAL_SHARED_LIBRARIES += \
@@ -115,6 +130,11 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinyalsa/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa
 else
 LOCAL_SHARED_LIBRARIES += libtinyalsa
+LOCAL_C_INCLUDES += \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 endif
 
 LOCAL_SHARED_LIBRARIES += \
@@ -151,7 +171,12 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinycompress/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa\
                           libqti-tinycompress
 else
-LOCAL_C_INCLUDES += $(TOP)/external/tinycompress/include
+LOCAL_C_INCLUDES += \
+    $(TOP)/external/tinycompress/include \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 LOCAL_SHARED_LIBRARIES += libtinyalsa\
                           libtinycompress
 endif
@@ -189,7 +214,12 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinycompress/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa\
                           libqti-tinycompress
 else
-LOCAL_C_INCLUDES += $(TOP)/external/tinycompress/include
+LOCAL_C_INCLUDES += \
+    $(TOP)/external/tinycompress/include \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 LOCAL_SHARED_LIBRARIES += libtinyalsa\
                           libtinycompress
 endif
@@ -224,6 +254,11 @@ LOCAL_C_INCLUDES += $(TOP)/vendor/qcom/opensource/tinyalsa/include
 LOCAL_SHARED_LIBRARIES += libqti-tinyalsa
 else
 LOCAL_SHARED_LIBRARIES += libtinyalsa
+LOCAL_C_INCLUDES += \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_client/inc \
+    vendor/qcom/opensource/agm/ipc/HwBinders/agm_ipc_service/inc/ \
+    vendor/qcom/opensource/pal/ipc/HwBinders/pal_ipc_server/inc/ \
+    vendor/qcom/opensource/pal/session/inc/
 endif
 
 LOCAL_SHARED_LIBRARIES += \

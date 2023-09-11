@@ -12,6 +12,7 @@ LOCAL_SRC_FILES     := src/agm_pcm_plugin.c
 
 LOCAL_HEADER_LIBRARIES := \
     libagm_headers \
+    libarpal_headers \
     libarosal_headers
 
 LOCAL_SHARED_LIBRARIES := \
@@ -53,6 +54,7 @@ LOCAL_SRC_FILES     := src/agm_mixer_plugin.c
 
 LOCAL_HEADER_LIBRARIES := \
     libagm_headers \
+    libarpal_headers \
     libarosal_headers
 
 LOCAL_SHARED_LIBRARIES := \
@@ -98,6 +100,7 @@ LOCAL_SRC_FILES     := src/agm_compress_plugin.c
 
 LOCAL_HEADER_LIBRARIES := \
     libagm_headers \
+    libarpal_headers \
     libarosal_headers
 
 LOCAL_SHARED_LIBRARIES := \
