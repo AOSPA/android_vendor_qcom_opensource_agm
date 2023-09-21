@@ -1,6 +1,6 @@
 /*
  * Copyright (c) 2019-2021, The Linux Foundation. All rights reserved.
- * Copyright (c) 2022 Qualcomm Innovation Center, Inc. All rights reserved.
+ * Copyright (c) 2022-2023 Qualcomm Innovation Center, Inc. All rights reserved.
  *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are
@@ -837,11 +837,48 @@ Return<int32_t> AGM::ipc_agm_set_params_with_tag_to_acdb(uint32_t session_id,
     return ret;
 }
 
+Return<int32_t> AGM::ipc_agm_set_params_to_acdb_tunnel(
+                                     const hidl_vec<uint8_t>& payload,
+                                     uint32_t size) {
+    size_t size_local = (size_t) size;
+    void * payload_local = NULL;
+    int32_t ret = 0;
+
+    if (payload.size() < size) {
+        ALOGE("%s: Invalid payload.size[%d] less than size %d\n", __func__, payload.size(), size);
+        return -EINVAL;
+    }
+
+    payload_local = (void*) calloc(1, size);
+    if (payload_local == NULL) {
+        ALOGE("%s: Cannot allocate memory for payload_local\n", __func__);
+        return -ENOMEM;
+    }
+
+    memcpy(payload_local, payload.data(), size);
+    ret = agm_set_params_to_acdb_tunnel(payload_local, size_local);
+    free(payload_local);
+
+    return ret;
+}
+
 Return<int32_t> AGM::ipc_agm_session_register_for_events(uint32_t session_id,
                                   const hidl_vec<AgmEventRegCfg>& evt_reg_cfg) {
     ALOGV("%s : session_id = %d\n", __func__, session_id);
     struct agm_event_reg_cfg *evt_reg_cfg_local;
     int32_t ret = 0;
+
+    if (evt_reg_cfg.size() != 1) {
+        ALOGE("%s evt_reg_cfg needs to be of size 1\n", __func__);
+        return -EINVAL;
+    }
+
+    if (evt_reg_cfg.data()->event_config_payload.size() !=
+        evt_reg_cfg.data()->event_config_payload_size) {
+        ALOGE("%s: event_config_payload_size value mismatch\n", __func__);
+        return -EINVAL;
+    }
+
     evt_reg_cfg_local = (struct agm_event_reg_cfg*)
               calloc(1,(sizeof(struct agm_event_reg_cfg) +
               (evt_reg_cfg.data()->event_config_payload_size)*sizeof(uint8_t)));
